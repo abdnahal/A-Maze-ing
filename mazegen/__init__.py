@@ -5,4 +5,4 @@ from mazegen.pathfinder import PathFinder
 from mazegen.display import MazeDisplay
 from mazegen.config_parser import ConfigParser
 
-__all__ = ['Cell', 'Maze', 'MazeGenerator', 'PathFinder', 'MazeDisplay', 'ConfigParser']
+__all__ = ["Cell", "Maze", "MazeGenerator", "PathFinder", "MazeDisplay", "ConfigParser"]
