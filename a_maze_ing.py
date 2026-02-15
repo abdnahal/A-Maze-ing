@@ -17,12 +17,14 @@ def clear_screen():
 def main():
     """Main application loop for the maze generator.
 
-    Reads configuration, generates a maze, finds a path, and provides
-    an interactive interface for displaying and manipulating the maze.
+    Limits recursive calls, reads configuration, generates a maze,
+    finds a path, and provides an interactive interface for displaying
+    and manipulating the maze.
 
     Raises:
         SystemExit: If incorrect command line arguments are provided.
     """
+    sys.setrecursionlimit(100000)
     if len(sys.argv) != 2:
         print(f"Usage: python3 {sys.argv[0]} <config_file>")
         sys.exit(1)
