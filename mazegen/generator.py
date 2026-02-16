@@ -8,7 +8,8 @@ from typing import List, Tuple
 class MazeGenerator:
     """Generates mazes using the recursive backtracking algorithm.
 
-    Supports generation of perfect mazes (trees) and imperfect mazes (with loops),
+    Supports generation of perfect mazes (trees) and
+    imperfect mazes (with loops),
     and can add decorative '42' patterns throughout the maze.
     """
 
@@ -22,7 +23,8 @@ class MazeGenerator:
         self.maze = maze
         if seed is not None:
             random.seed(seed)
-        self.visited = [[False for _ in range(maze.width)] for _ in range(maze.height)]
+        self.visited = [[False for _ in range(maze.width)]
+                        for _ in range(maze.height)]
         self.pattern_42_cells = []
 
     def generate(self, perfect: bool = True) -> None:
@@ -34,7 +36,8 @@ class MazeGenerator:
         """
         start_x, start_y = self.maze.entry
         self.visited = [
-            [False for _ in range(self.maze.width)] for _ in range(self.maze.height)
+            [False for _ in range(self.maze.width)]
+            for _ in range(self.maze.height)
         ]
         self.recursive_backtrack(start_x, start_y)
 
@@ -59,7 +62,8 @@ class MazeGenerator:
                 self.remove_wall_between(x, y, next_x, next_y, direction)
                 self.recursive_backtrack(next_x, next_y)
 
-    def get_unvisited_neighbors(self, x: int, y: int) -> List[Tuple[int, int, str]]:
+    def get_unvisited_neighbors(
+            self, x: int, y: int) -> List[Tuple[int, int, str]]:
         """Get all unvisited neighbor cells in cardinal directions.
 
         Args:
@@ -95,7 +99,8 @@ class MazeGenerator:
             y1: The y-coordinate of the first cell.
             x2: The x-coordinate of the second cell.
             y2: The y-coordinate of the second cell.
-            direction: The direction from cell1 to cell2 ('north', 'east', 'south', 'west').
+            direction: The direction from cell1 to cell2
+            ('north', 'east', 'south', 'west').
         """
         cell1 = self.maze.get_cell(x1, y1)
         cell2 = self.maze.get_cell(x2, y2)
@@ -140,7 +145,7 @@ class MazeGenerator:
                 continue
 
             direction = random.choice(["north", "east", "south", "west"])
-
+            height = self.maze.height
             if direction == "north" and y > 0 and cell.north:
                 neighbor = self.maze.get_cell(x, y - 1)
                 cell.north = False
@@ -151,7 +156,7 @@ class MazeGenerator:
                 cell.east = False
                 neighbor.west = False
                 removed += 1
-            elif direction == "south" and y < self.maze.height - 1 and cell.south:
+            elif direction == "south" and y < height - 1 and cell.south:
                 neighbor = self.maze.get_cell(x, y + 1)
                 cell.south = False
                 neighbor.north = False
@@ -164,9 +169,18 @@ class MazeGenerator:
 
     def add_pattern_42_safe(self) -> None:
         """Add a decorative '42' pattern to the maze if space permits.
+        :
+                    with open(self.filepath, "r") as file:
+                        for line in file:
+                            if line.startswith("#"):
+                                continue
+                            if not line:
+                                continue
+                            par = line.split("=", 1)
+                            self.config[par[0].strip()] = par[1].strip()
 
-        The pattern is placed in a location that doesn't intersect with
-        the solution path to ensure the maze remains solvable.
+                The pattern is placed in a location that doesn't intersect with
+                the solution path to ensure the maze remains solvable.
         """
         pattern = [
             [1, 0, 0, 1, 0, 1, 1, 1],
@@ -178,8 +192,10 @@ class MazeGenerator:
 
         pattern_height = len(pattern)
         pattern_width = len(pattern[0])
+        width = self.maze.width
+        height = self.maze.height
 
-        if self.maze.height < pattern_height + 2 or self.maze.width < pattern_width + 2:
+        if width < pattern_height + 2 or height < pattern_width + 2:
             return
 
         from mazegen.pathfinder import PathFinder

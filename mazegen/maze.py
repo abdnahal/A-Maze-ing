@@ -12,7 +12,8 @@ class Maze:
     """
 
     def __init__(
-        self, width: int, height: int, entry: tuple[int, int], exit: tuple[int, int]
+        self, width: int, height: int, entry:
+        tuple[int, int], exit: tuple[int, int]
     ):
         """Initialize a maze with specified dimensions and entry/exit points.
 

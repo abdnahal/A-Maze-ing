@@ -104,7 +104,7 @@ class MazeDisplay:
                 if cell.east:
                     line += "┬"
                 else:
-                    line += " "
+                    line += "─"
 
         line += f"┐{self.RESET}"
         print(line)
@@ -187,7 +187,8 @@ class MazeDisplay:
         Returns:
             A dictionary mapping keys to (color_code, color_name) tuples.
         """
-        colors = {
+        colors = dict[str, tuple[str, str]]
+        {
             "1": ("\033[31m", "Red"),
             "2": ("\033[32m", "Green"),
             "3": ("\033[33m", "Yellow"),

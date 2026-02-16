@@ -40,9 +40,9 @@ def main():
     perfect = config.get_bool("PERFECT")
 
     if width < 8 or height < 5:
-        print(
-            "Error: maze dimensions too small for 42 pattern, maze creation will proceed without 42 pattern..."
-        )
+        error = "Error: maze dimensions too small for 42 pattern," \
+                " maze creation will proceed without 42 pattern..."
+        print(error)
     maze = Maze(width, height, entry, exit_pos)
     generator = MazeGenerator(maze, seed=seed)
     pathfinder = PathFinder(maze)

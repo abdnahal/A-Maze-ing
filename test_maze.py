@@ -1,4 +1,4 @@
-from mazegen import Maze, MazeGenerator, PathFinder, MazeDisplay
+from mazegen import Maze, MazeGenerator, PathFinder
 
 
 def test_basic():
