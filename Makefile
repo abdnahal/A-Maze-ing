@@ -20,3 +20,9 @@ lint:
 lint-strict:
 	flake8 .
 	mypy . --strict
+
+package:
+    pip install --break-system-packages build
+    python3 -m build
+    cp dist/mazegen-*.tar.gz ./mazegen.tar.gz
+    @echo "Package built: mazegen.tar.gz"

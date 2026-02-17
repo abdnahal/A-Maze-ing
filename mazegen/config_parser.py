@@ -18,7 +18,7 @@ class ConfigParser:
             FileNotFoundError: If the configuration file does not exist.
         """
         self.filepath = filepath
-        self.config = {}
+        self.config: dict[str, str] = {}
         self.parse()
 
     def parse(self) -> None:

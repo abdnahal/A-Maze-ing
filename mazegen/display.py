@@ -95,16 +95,17 @@ class MazeDisplay:
         line = f"{self.wall_color}┌"
         for x in range(self.maze.width):
             cell = self.maze.get_cell(x, 0)
-            if cell.north:
-                line += "───"
-            else:
-                line += "   "
-
-            if x < self.maze.width - 1:
-                if cell.east:
-                    line += "┬"
+            if cell:
+                if cell.north:
+                    line += "───"
                 else:
-                    line += "─"
+                    line += "   "
+
+                if x < self.maze.width - 1:
+                    if cell.east:
+                        line += "┬"
+                    else:
+                        line += "─"
 
         line += f"┐{self.RESET}"
         print(line)
@@ -119,30 +120,31 @@ class MazeDisplay:
 
         for x in range(self.maze.width):
             cell = self.maze.get_cell(x, y)
+            if cell:
+                if cell.west:
+                    line += f"{self.wall_color}│{self.RESET}"
+                else:
+                    line += " "
 
-            if cell.west:
+                if (x, y) == self.maze.entry:
+                    line += f"{self.entry_color} S {self.RESET}"
+                elif (x, y) == self.maze.exit:
+                    line += f"{self.exit_color} E {self.RESET}"
+                elif self.show_pattern and (x, y) in self.pattern_42_cells:
+                    line += f"{self.pattern_color}   {self.RESET}"
+                elif self.show_path and (x, y) in self.path_cells:
+                    line += f"{self.path_color} · {self.RESET}"
+                else:
+                    line += "   "
+
+        last_cell = self.maze.get_cell(self.maze.width - 1, y)
+        if last_cell:
+            if last_cell.east:
                 line += f"{self.wall_color}│{self.RESET}"
             else:
                 line += " "
 
-            if (x, y) == self.maze.entry:
-                line += f"{self.entry_color} S {self.RESET}"
-            elif (x, y) == self.maze.exit:
-                line += f"{self.exit_color} E {self.RESET}"
-            elif self.show_pattern and (x, y) in self.pattern_42_cells:
-                line += f"{self.pattern_color}   {self.RESET}"
-            elif self.show_path and (x, y) in self.path_cells:
-                line += f"{self.path_color} · {self.RESET}"
-            else:
-                line += "   "
-
-        last_cell = self.maze.get_cell(self.maze.width - 1, y)
-        if last_cell.east:
-            line += f"{self.wall_color}│{self.RESET}"
-        else:
-            line += " "
-
-        print(line)
+            print(line)
 
     def print_row_divider(self, y: int) -> None:
         """Print a horizontal divider between maze rows.
@@ -153,12 +155,13 @@ class MazeDisplay:
         line = f"{self.wall_color}├"
         for x in range(self.maze.width):
             cell = self.maze.get_cell(x, y)
-            if cell.south:
-                line += "───"
-            else:
-                line += "   "
-            if x < self.maze.width - 1:
-                line += "┼"
+            if cell:
+                if cell.south:
+                    line += "───"
+                else:
+                    line += "   "
+                if x < self.maze.width - 1:
+                    line += "┼"
         line += f"┤{self.RESET}"
         print(line)
 
@@ -169,14 +172,14 @@ class MazeDisplay:
 
         for x in range(self.maze.width):
             cell = self.maze.get_cell(x, y)
+            if cell:
+                if cell.south:
+                    line += "───"
+                else:
+                    line += "   "
 
-            if cell.south:
-                line += "───"
-            else:
-                line += "   "
-
-            if x < self.maze.width - 1:
-                line += "┴"
+                if x < self.maze.width - 1:
+                    line += "┴"
 
         line += f"┘{self.RESET}"
         print(line)
