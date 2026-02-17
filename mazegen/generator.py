@@ -35,10 +35,10 @@ class MazeGenerator:
                     If False, adds loops to create a more complex maze.
         """
         start_x, start_y = self.maze.entry
-        self.visited = [
-            [False for _ in range(self.maze.width)]
-            for _ in range(self.maze.height)
-        ]
+        # self.visited = [
+        #     [False for _ in range(self.maze.width)]
+        #     for _ in range(self.maze.height)
+        # ]
         self.recursive_backtrack(start_x, start_y)
 
         if not perfect:

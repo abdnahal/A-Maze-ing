@@ -36,11 +36,18 @@ class ConfigParser:
                         continue
                     if not line:
                         continue
-                    par = line.split("=", 1)
-                    self.config[par[0].strip()] = par[1].strip()
+                    if '=' in line:
+                        par = line.split("=", 1)
+                        self.config[par[0].strip()] = par[1].strip()
+                    else:
+                        raise ValueError()
 
         except FileNotFoundError:
             print(f"Error: Config file '{self.filepath}' not found!")
+            raise
+        except ValueError:
+            print(f"Error: Invalid format in {self.filepath},\
+                   expected format 'Key = Value'")
             raise
 
     def get(self, key: str, default=None):

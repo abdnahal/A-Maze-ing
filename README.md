@@ -1,4 +1,4 @@
-*This project has been created as part of the 42 curriculum by <mberouak>[<zahraka>].*
+*This project has been created as part of the 42 curriculum by <abdnahal>, <mberouak>*
 
 # A-Maze-ing - Maze Generator
 
