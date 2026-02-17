@@ -76,8 +76,9 @@ class Maze:
         with open(filepath, "w") as f:
             for y in range(self.height):
                 for x in range(self.width):
-                    if self.get_cell(x, y):
-                        f.write(self.get_cell(x, y).to_hex())
+                    cell = self.get_cell(x, y)
+                    if cell:
+                        f.write(cell.to_hex())
                 f.write("\n")
 
             f.write("\n")

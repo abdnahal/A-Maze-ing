@@ -25,7 +25,7 @@ class MazeGenerator:
             random.seed(seed)
         self.visited = [[False for _ in range(maze.width)]
                         for _ in range(maze.height)]
-        self.pattern_42_cells = []
+        self.pattern_42_cells: List[Tuple[int, int]] = []
 
     def generate(self, perfect: bool = True) -> None:
         """Generate the maze.
@@ -104,19 +104,19 @@ class MazeGenerator:
         """
         cell1 = self.maze.get_cell(x1, y1)
         cell2 = self.maze.get_cell(x2, y2)
-
-        if direction == "north":
-            cell1.north = False
-            cell2.south = False
-        elif direction == "east":
-            cell1.east = False
-            cell2.west = False
-        elif direction == "south":
-            cell1.south = False
-            cell2.north = False
-        elif direction == "west":
-            cell1.west = False
-            cell2.east = False
+        if cell1 and cell2:
+            if direction == "north":
+                cell1.north = False
+                cell2.south = False
+            elif direction == "east":
+                cell1.east = False
+                cell2.west = False
+            elif direction == "south":
+                cell1.south = False
+                cell2.north = False
+            elif direction == "west":
+                cell1.west = False
+                cell2.east = False
 
     def add_loops(self, loop_percentage: float = 0.15) -> None:
         """Add loops to the maze by randomly removing walls.
@@ -146,26 +146,32 @@ class MazeGenerator:
 
             direction = random.choice(["north", "east", "south", "west"])
             height = self.maze.height
-            if direction == "north" and y > 0 and cell.north:
-                neighbor = self.maze.get_cell(x, y - 1)
-                cell.north = False
-                neighbor.south = False
-                removed += 1
-            elif direction == "east" and x < self.maze.width - 1 and cell.east:
-                neighbor = self.maze.get_cell(x + 1, y)
-                cell.east = False
-                neighbor.west = False
-                removed += 1
-            elif direction == "south" and y < height - 1 and cell.south:
-                neighbor = self.maze.get_cell(x, y + 1)
-                cell.south = False
-                neighbor.north = False
-                removed += 1
-            elif direction == "west" and x > 0 and cell.west:
-                neighbor = self.maze.get_cell(x - 1, y)
-                cell.west = False
-                neighbor.east = False
-                removed += 1
+            width = self.maze.width
+            if cell:
+                if direction == "north" and y > 0 and cell.north:
+                    neighbor = self.maze.get_cell(x, y - 1)
+                    if neighbor:
+                        cell.north = False
+                        neighbor.south = False
+                        removed += 1
+                elif direction == "east" and x < width - 1 and cell.east:
+                    neighbor = self.maze.get_cell(x + 1, y)
+                    if neighbor:
+                        cell.east = False
+                        neighbor.west = False
+                        removed += 1
+                elif direction == "south" and y < height - 1 and cell.south:
+                    neighbor = self.maze.get_cell(x, y + 1)
+                    if neighbor:
+                        cell.south = False
+                        neighbor.north = False
+                        removed += 1
+                elif direction == "west" and x > 0 and cell.west:
+                    neighbor = self.maze.get_cell(x - 1, y)
+                    if neighbor:
+                        cell.west = False
+                        neighbor.east = False
+                        removed += 1
 
     def add_pattern_42_safe(self) -> None:
         """Add a decorative '42' pattern to the maze if space permits.
