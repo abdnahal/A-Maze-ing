@@ -78,7 +78,7 @@ class Maze:
             filepath: The path where the maze file will be written.
             path: List of direction characters representing the solution path.
         """
-        with open(filepath, "w") as f:
+        with open(str(filepath), "w") as f:
             for y in range(self.height):
                 for x in range(self.width):
                     cell = self.get_cell(x, y)
