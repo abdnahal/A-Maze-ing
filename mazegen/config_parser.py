@@ -49,8 +49,9 @@ class ConfigParser:
             print(f"Error: Config file '{self.filepath}' not found!")
             raise
         except ValueError:
-            print(f"Error: Invalid format in {self.filepath},\
-                   expected format 'Key = Value'")
+            error = f"Error: Invalid format in {self.filepath},\
+                    expected format 'Key = Value'"
+            print(error)
             raise
 
     def get(self, key: str, default: Optional[Any] = None) -> str | None:

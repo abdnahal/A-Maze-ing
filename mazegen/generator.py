@@ -22,8 +22,7 @@ class MazeGenerator:
             seed: Optional random seed for reproducible generation.
         """
         self.maze = maze
-        if seed is not None:
-            random.seed(seed)
+        self.seed = seed
         self.visited = [[False for _ in range(maze.width)]
                         for _ in range(maze.height)]
         self.pattern_42_cells: List[Tuple[int, int]] = []
@@ -37,6 +36,12 @@ class MazeGenerator:
         """
         self.maze.reset()
         self.pattern_42_cells = []
+
+        # Re-apply seed on every generation so seeded runs are always identical
+        if self.seed is not None:
+            random.seed(self.seed)
+        else:
+            random.seed()
 
         # Reset visited grid
         self.visited = [
