@@ -1,7 +1,7 @@
 """Module for rendering and displaying mazes in the terminal."""
 
 from mazegen.maze import Maze
-from typing import List, Set, Tuple
+from typing import List, Set, Tuple, Optional
 
 
 class MazeDisplay:
@@ -18,8 +18,10 @@ class MazeDisplay:
     PATTERN_COLOR = "\033[45m"
     RESET = "\033[0m"
 
-    def __init__(self, maze: Maze, pattern_42_cells:
-                 Set[Tuple[int, int]] = None):
+    def __init__(
+        self, maze: Maze,
+        pattern_42_cells: Optional[Set[Tuple[int, int]]] = None
+    ):
         """Initialize the maze display.
 
         Args:

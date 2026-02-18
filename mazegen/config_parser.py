@@ -1,5 +1,7 @@
 """Module for parsing maze configuration files."""
+
 import sys
+
 
 class ConfigParser:
     """Parses and provides access to maze configuration parameters.
@@ -36,7 +38,7 @@ class ConfigParser:
                         continue
                     if not line:
                         continue
-                    if '=' in line:
+                    if "=" in line:
                         par = line.split("=", 1)
                         self.config[par[0].strip()] = par[1].strip()
                     else:
@@ -93,12 +95,14 @@ class ConfigParser:
             KeyError: If the key is not found in configuration.
         """
         value = self.config.get(key)
-        if value.lower() == "true":
-            return True
-        elif value.lower() == "false":
-            return False
+        if value:
+            if value.lower() == "true":
+                return True
+            elif value.lower() == "false":
+                return False
         else:
             raise KeyError(f"Missing key: {key}")
+        return False
 
     def get_tuple(self, key: str) -> tuple[int, int]:
         """Get a configuration value as a tuple of two integers.

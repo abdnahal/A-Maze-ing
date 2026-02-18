@@ -2,7 +2,7 @@
 
 import random
 from mazegen.maze import Maze
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 import sys
 
 
@@ -14,7 +14,7 @@ class MazeGenerator:
     and can add decorative '42' patterns throughout the maze.
     """
 
-    def __init__(self, maze: Maze, seed: int = None):
+    def __init__(self, maze: Maze, seed: Optional[int] = None):
         """Initialize the maze generator.
 
         Args:
@@ -37,22 +37,24 @@ class MazeGenerator:
         """
         self.maze.reset()
         self.pattern_42_cells = []
-        
+
         # Reset visited grid
-        self.visited = [[False for _ in range(self.maze.width)]
-                        for _ in range(self.maze.height)]
-        
+        self.visited = [
+            [False for _ in range(self.maze.width)]
+            for _ in range(self.maze.height)
+        ]
+
         # Place pattern FIRST so maze generates around it
         self.place_pattern_center()
-        
+
         start_x, start_y = self.maze.entry
         end_x, end_y = self.maze.exit
         if start_x >= self.maze.width or start_y >= self.maze.height:
             print("Invalid Entry dimensions")
-            sys.exit(1) 
+            sys.exit(1)
         if end_x >= self.maze.width or end_y >= self.maze.height:
-             print("Invalid Exit dimensions")
-             sys.exit(1) 
+            print("Invalid Exit dimensions")
+            sys.exit(1)
         self.recursive_backtrack(start_x, start_y)
 
         if not perfect:
@@ -67,14 +69,14 @@ class MazeGenerator:
             [0, 0, 0, 1, 0, 1, 0, 0],
             [0, 0, 0, 1, 0, 1, 1, 1],
         ]
-        
+
         pattern_height = len(pattern)
         pattern_width = len(pattern[0])
-        
+
         # Calculate center position
         start_x = (self.maze.width - pattern_width) // 2
         start_y = (self.maze.height - pattern_height) // 2
-        
+
         # Ensure maze is big enough
         if start_x < 0 or start_y < 0:
             return
@@ -85,11 +87,11 @@ class MazeGenerator:
                 if pattern[py][px] == 1:
                     cell_x = start_x + px
                     cell_y = start_y + py
-                    
+
                     if self.maze.is_valid_position(cell_x, cell_y):
                         # Mark as visited so generator avoids it
                         self.visited[cell_y][cell_x] = True
-                        
+
                         # Add to pattern list for display
                         self.pattern_42_cells.append((cell_x, cell_y))
 
@@ -109,8 +111,8 @@ class MazeGenerator:
                 self.remove_wall_between(x, y, next_x, next_y, direction)
                 self.recursive_backtrack(next_x, next_y)
 
-    def get_unvisited_neighbors(
-            self, x: int, y: int) -> List[Tuple[int, int, str]]:
+    def get_unvisited_neighbors(self, x: int,
+                                y: int) -> List[Tuple[int, int, str]]:
         """Get all unvisited neighbor cells in cardinal directions.
 
         Args:
@@ -187,7 +189,7 @@ class MazeGenerator:
             attempts += 1
             x = random.randint(0, self.maze.width - 1)
             y = random.randint(0, self.maze.height - 1)
-            
+
             if (x, y) in pattern_set:
                 continue
 
@@ -196,30 +198,34 @@ class MazeGenerator:
                 continue
 
             direction = random.choice(["north", "east", "south", "west"])
-            
+            height = self.maze.height
             if direction == "north" and y > 0 and cell.north:
-                if (x, y - 1) in pattern_set: continue
+                if (x, y - 1) in pattern_set:
+                    continue
                 neighbor = self.maze.get_cell(x, y - 1)
                 if neighbor:
                     cell.north = False
                     neighbor.south = False
                     removed += 1
             elif direction == "east" and x < self.maze.width - 1 and cell.east:
-                if (x + 1, y) in pattern_set: continue
+                if (x + 1, y) in pattern_set:
+                    continue
                 neighbor = self.maze.get_cell(x + 1, y)
                 if neighbor:
                     cell.east = False
                     neighbor.west = False
                     removed += 1
-            elif direction == "south" and y < self.maze.height - 1 and cell.south:
-                if (x, y + 1) in pattern_set: continue
+            elif direction == "south" and y < height - 1 and cell.south:
+                if (x, y + 1) in pattern_set:
+                    continue
                 neighbor = self.maze.get_cell(x, y + 1)
                 if neighbor:
                     cell.south = False
                     neighbor.north = False
                     removed += 1
             elif direction == "west" and x > 0 and cell.west:
-                if (x - 1, y) in pattern_set: continue
+                if (x - 1, y) in pattern_set:
+                    continue
                 neighbor = self.maze.get_cell(x - 1, y)
                 if neighbor:
                     cell.west = False
