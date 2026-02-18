@@ -9,12 +9,12 @@ import sys
 from mazegen import ConfigParser, Maze, MazeGenerator, PathFinder, MazeDisplay
 
 
-def clear_screen():
+def clear_screen() -> None:
     """Clear the terminal screen and move cursor to home position."""
     print("\033[2J\033[H", end="")
 
 
-def main():
+def main() -> None:
     """Main application loop for the maze generator.
 
     Limits recursive calls, reads configuration, generates a maze,

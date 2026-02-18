@@ -71,7 +71,7 @@ class Maze:
         if self.is_valid_position(x, y):
             self.grid[y][x] = cell
 
-    def to_file(self, filepath: str, path: List[str]) -> None:
+    def to_file(self, filepath: str | None, path: List[str]) -> None:
         """Write the maze to a file in hex-encoded format.
 
         Args:

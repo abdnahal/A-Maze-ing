@@ -1,6 +1,7 @@
 """Module for parsing maze configuration files."""
 
 import sys
+from typing import Any, Optional
 
 
 class ConfigParser:
@@ -52,7 +53,7 @@ class ConfigParser:
                    expected format 'Key = Value'")
             raise
 
-    def get(self, key: str, default=None):
+    def get(self, key: str, default: Optional[Any] = None) -> str | None:
         """Get a configuration value as a string.
 
         Args:
