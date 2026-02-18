@@ -29,6 +29,11 @@ class Maze:
         self.exit = exit
         self.grid = [[Cell() for _ in range(width)] for _ in range(height)]
 
+    def reset(self) -> None:
+        """Reset all cells in the maze to have all walls intact."""
+        self.grid = [[Cell() for _ in range(self.width)]
+                     for _ in range(self.height)]
+
     def is_valid_position(self, x: int, y: int) -> bool:
         """Check if the given coordinates are within the maze bounds.
 

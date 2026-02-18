@@ -1,5 +1,5 @@
 """Module for parsing maze configuration files."""
-
+import sys
 
 class ConfigParser:
     """Parses and provides access to maze configuration parameters.
@@ -76,7 +76,7 @@ class ConfigParser:
             ValueError: If the value cannot be converted to an integer.
         """
         value = self.config.get(key)
-        if value is None:
+        if value is None or int(value) < 0:
             raise KeyError(f"Missing key: {key}")
         return int(value)
 
@@ -93,9 +93,12 @@ class ConfigParser:
             KeyError: If the key is not found in configuration.
         """
         value = self.config.get(key)
-        if value is None:
+        if value.lower() == "true":
+            return True
+        elif value.lower() == "false":
+            return False
+        else:
             raise KeyError(f"Missing key: {key}")
-        return value.lower() == "true"
 
     def get_tuple(self, key: str) -> tuple[int, int]:
         """Get a configuration value as a tuple of two integers.
@@ -110,8 +113,12 @@ class ConfigParser:
             KeyError: If the key is not found in configuration.
             ValueError: If the value cannot be parsed as two integers.
         """
-        value = self.config.get(key)
-        if value is None:
-            raise KeyError(f"Missing key: {key}")
-        parts = value.split(",")
-        return (int(parts[0].strip()), int(parts[1].strip()))
+        try:
+            value = self.config.get(key)
+            if value is None:
+                raise KeyError(f"Missing key: {key}")
+            parts = value.split(",")
+            return (int(parts[0].strip()), int(parts[1].strip()))
+        except IndexError:
+            print("Config File Error: list index out of range")
+            sys.exit(1)

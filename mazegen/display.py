@@ -38,6 +38,14 @@ class MazeDisplay:
         self.exit_color = self.EXIT_COLOR
         self.pattern_color = self.PATTERN_COLOR
 
+    def set_pattern(self, pattern_cells: Set[Tuple[int, int]]) -> None:
+        """Update the set of cells that form the '42' pattern.
+
+        Args:
+            pattern_cells: New set of (x, y) coordinates for the pattern.
+        """
+        self.pattern_42_cells = pattern_cells if pattern_cells else set()
+
     def set_path(self, path: List[str]) -> None:
         """Set the solution path to display.
 
@@ -190,8 +198,7 @@ class MazeDisplay:
         Returns:
             A dictionary mapping keys to (color_code, color_name) tuples.
         """
-        colors = dict[str, tuple[str, str]]
-        {
+        colors = {
             "1": ("\033[31m", "Red"),
             "2": ("\033[32m", "Green"),
             "3": ("\033[33m", "Yellow"),

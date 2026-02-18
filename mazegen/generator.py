@@ -3,6 +3,7 @@
 import random
 from mazegen.maze import Maze
 from typing import List, Tuple
+import sys
 
 
 class MazeGenerator:
@@ -34,17 +35,63 @@ class MazeGenerator:
             perfect: If True, generates a perfect maze (tree structure).
                     If False, adds loops to create a more complex maze.
         """
+        self.maze.reset()
+        self.pattern_42_cells = []
+        
+        # Reset visited grid
+        self.visited = [[False for _ in range(self.maze.width)]
+                        for _ in range(self.maze.height)]
+        
+        # Place pattern FIRST so maze generates around it
+        self.place_pattern_center()
+        
         start_x, start_y = self.maze.entry
-        # self.visited = [
-        #     [False for _ in range(self.maze.width)]
-        #     for _ in range(self.maze.height)
-        # ]
+        end_x, end_y = self.maze.exit
+        if start_x >= self.maze.width or start_y >= self.maze.height:
+            print("Invalid Entry dimensions")
+            sys.exit(1) 
+        if end_x >= self.maze.width or end_y >= self.maze.height:
+             print("Invalid Exit dimensions")
+             sys.exit(1) 
         self.recursive_backtrack(start_x, start_y)
 
         if not perfect:
             self.add_loops()
 
-        self.add_pattern_42_safe()
+    def place_pattern_center(self) -> None:
+        """Place '42' pattern as obstacles in the center of the maze."""
+        pattern = [
+            [1, 0, 0, 1, 0, 1, 1, 1],
+            [1, 0, 0, 1, 0, 0, 0, 1],
+            [1, 1, 1, 1, 0, 1, 1, 1],
+            [0, 0, 0, 1, 0, 1, 0, 0],
+            [0, 0, 0, 1, 0, 1, 1, 1],
+        ]
+        
+        pattern_height = len(pattern)
+        pattern_width = len(pattern[0])
+        
+        # Calculate center position
+        start_x = (self.maze.width - pattern_width) // 2
+        start_y = (self.maze.height - pattern_height) // 2
+        
+        # Ensure maze is big enough
+        if start_x < 0 or start_y < 0:
+            return
+
+        # Place the pattern
+        for py in range(pattern_height):
+            for px in range(pattern_width):
+                if pattern[py][px] == 1:
+                    cell_x = start_x + px
+                    cell_y = start_y + py
+                    
+                    if self.maze.is_valid_position(cell_x, cell_y):
+                        # Mark as visited so generator avoids it
+                        self.visited[cell_y][cell_x] = True
+                        
+                        # Add to pattern list for display
+                        self.pattern_42_cells.append((cell_x, cell_y))
 
     def recursive_backtrack(self, x: int, y: int) -> None:
         """Generate maze using recursive backtracking from a starting cell.
@@ -130,6 +177,7 @@ class MazeGenerator:
         """
         total_cells = self.maze.width * self.maze.height
         walls_to_remove = int(total_cells * loop_percentage)
+        pattern_set = set(self.pattern_42_cells)
 
         removed = 0
         attempts = 0
@@ -139,123 +187,41 @@ class MazeGenerator:
             attempts += 1
             x = random.randint(0, self.maze.width - 1)
             y = random.randint(0, self.maze.height - 1)
-            cell = self.maze.get_cell(x, y)
+            
+            if (x, y) in pattern_set:
+                continue
 
+            cell = self.maze.get_cell(x, y)
             if not cell:
                 continue
 
             direction = random.choice(["north", "east", "south", "west"])
-            height = self.maze.height
-            width = self.maze.width
-            if cell:
-                if direction == "north" and y > 0 and cell.north:
-                    neighbor = self.maze.get_cell(x, y - 1)
-                    if neighbor:
-                        cell.north = False
-                        neighbor.south = False
-                        removed += 1
-                elif direction == "east" and x < width - 1 and cell.east:
-                    neighbor = self.maze.get_cell(x + 1, y)
-                    if neighbor:
-                        cell.east = False
-                        neighbor.west = False
-                        removed += 1
-                elif direction == "south" and y < height - 1 and cell.south:
-                    neighbor = self.maze.get_cell(x, y + 1)
-                    if neighbor:
-                        cell.south = False
-                        neighbor.north = False
-                        removed += 1
-                elif direction == "west" and x > 0 and cell.west:
-                    neighbor = self.maze.get_cell(x - 1, y)
-                    if neighbor:
-                        cell.west = False
-                        neighbor.east = False
-                        removed += 1
-
-    def add_pattern_42_safe(self) -> None:
-        """Add a decorative '42' pattern to the maze if space permits.
-        :
-                    with open(self.filepath, "r") as file:
-                        for line in file:
-                            if line.startswith("#"):
-                                continue
-                            if not line:
-                                continue
-                            par = line.split("=", 1)
-                            self.config[par[0].strip()] = par[1].strip()
-
-                The pattern is placed in a location that doesn't intersect with
-                the solution path to ensure the maze remains solvable.
-        """
-        pattern = [
-            [1, 0, 0, 1, 0, 1, 1, 1],
-            [1, 0, 0, 1, 0, 0, 0, 1],
-            [1, 1, 1, 1, 0, 1, 1, 1],
-            [0, 0, 0, 1, 0, 1, 0, 0],
-            [0, 0, 0, 1, 0, 1, 1, 1],
-        ]
-
-        pattern_height = len(pattern)
-        pattern_width = len(pattern[0])
-        width = self.maze.width
-        height = self.maze.height
-
-        if width < pattern_height + 2 or height < pattern_width + 2:
-            return
-
-        from mazegen.pathfinder import PathFinder
-
-        pathfinder = PathFinder(self.maze)
-        solution_path = pathfinder.find_path(self.maze.entry, self.maze.exit)
-
-        if not solution_path:
-            return
-
-        solution_cells = set()
-        x, y = self.maze.entry
-        solution_cells.add((x, y))
-        for direction in solution_path:
-            if direction == "N":
-                y -= 1
-            elif direction == "E":
-                x += 1
-            elif direction == "S":
-                y += 1
-            elif direction == "W":
-                x -= 1
-            solution_cells.add((x, y))
-
-        max_attempts = 50
-        for attempt in range(max_attempts):
-            start_x = random.randint(1, self.maze.width - pattern_width - 1)
-            start_y = random.randint(1, self.maze.height - pattern_height - 1)
-
-            pattern_cells = []
-            valid = True
-
-            for py in range(pattern_height):
-                for px in range(pattern_width):
-                    if pattern[py][px] == 1:
-                        cell_x = start_x + px
-                        cell_y = start_y + py
-
-                        if (cell_x, cell_y) in solution_cells:
-                            valid = False
-                            break
-
-                        pattern_cells.append((cell_x, cell_y))
-
-                if not valid:
-                    break
-
-            if valid and len(pattern_cells) > 0:
-                for cell_x, cell_y in pattern_cells:
-                    cell = self.maze.get_cell(cell_x, cell_y)
-                    if cell:
-                        cell.north = True
-                        cell.east = True
-                        cell.south = True
-                        cell.west = True
-                        self.pattern_42_cells.append((cell_x, cell_y))
-                return
+            
+            if direction == "north" and y > 0 and cell.north:
+                if (x, y - 1) in pattern_set: continue
+                neighbor = self.maze.get_cell(x, y - 1)
+                if neighbor:
+                    cell.north = False
+                    neighbor.south = False
+                    removed += 1
+            elif direction == "east" and x < self.maze.width - 1 and cell.east:
+                if (x + 1, y) in pattern_set: continue
+                neighbor = self.maze.get_cell(x + 1, y)
+                if neighbor:
+                    cell.east = False
+                    neighbor.west = False
+                    removed += 1
+            elif direction == "south" and y < self.maze.height - 1 and cell.south:
+                if (x, y + 1) in pattern_set: continue
+                neighbor = self.maze.get_cell(x, y + 1)
+                if neighbor:
+                    cell.south = False
+                    neighbor.north = False
+                    removed += 1
+            elif direction == "west" and x > 0 and cell.west:
+                if (x - 1, y) in pattern_set: continue
+                neighbor = self.maze.get_cell(x - 1, y)
+                if neighbor:
+                    cell.west = False
+                    neighbor.east = False
+                    removed += 1
