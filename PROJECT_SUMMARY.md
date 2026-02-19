@@ -18,9 +18,9 @@ maze_project/
 │   └── config_parser.py    # Config file parser
 ├── a_maze_ing.py           # Main program (interactive)
 ├── config.txt              # Default configuration
-├── test_maze.py            # Test suite
 ├── output_validator.py     # Provided validator
 ├── Makefile                # Build automation
+├── mazegen.tar.gz          # The maze package that can be installed
 ├── .gitignore              # Git ignore file
 └── README.md               # Full documentation
 ```
@@ -149,5 +149,3 @@ All requirements met:
 - Proper package structure
 - Complete documentation
 - All mandatory features implemented
-
-Good luck with your evaluation! 🚀
