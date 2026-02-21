@@ -102,8 +102,8 @@ class ConfigParser:
                 return True
             elif value.lower() == "false":
                 return False
-        else:
-            raise KeyError(f"Missing key: {key}")
+            else:
+                raise KeyError(f"Missing key: {key}")
         return False
 
     def get_tuple(self, key: str) -> tuple[int, int]:
@@ -124,6 +124,8 @@ class ConfigParser:
             if value is None:
                 raise KeyError(f"Missing key: {key}")
             parts = value.split(",")
+            if len(parts) > 2:
+                raise KeyError(f"Invalid {key} Format")
             return (int(parts[0].strip()), int(parts[1].strip()))
         except IndexError:
             print("Config File Error: list index out of range")
