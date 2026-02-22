@@ -92,13 +92,22 @@ class MazeGenerator:
                 if pattern[py][px] == 1:
                     cell_x = start_x + px
                     cell_y = start_y + py
+                ex, ey = self.maze.exit
+                ix, iy = self.maze.entry
+                ex_cell = self.maze.get_cell(ex, ey)
+                patt_cell = self.maze.get_cell(cell_x, cell_y)
+                ix_cell = self.maze.get_cell(ix, iy)
+                if ex_cell == patt_cell:
+                    sys.exit("exit provided conflict with 42 pattern")
+                if ix_cell == patt_cell:
+                    sys.exit("entry provided conflict with 42 pattern")
 
-                    if self.maze.is_valid_position(cell_x, cell_y):
-                        # Mark as visited so generator avoids it
-                        self.visited[cell_y][cell_x] = True
+                if self.maze.is_valid_position(cell_x, cell_y):
+                    # Mark as visited so generator avoids it
+                    self.visited[cell_y][cell_x] = True
 
-                        # Add to pattern list for display
-                        self.pattern_42_cells.append((cell_x, cell_y))
+                    # Add to pattern list for display
+                    self.pattern_42_cells.append((cell_x, cell_y))
 
     def recursive_backtrack(self, x: int, y: int) -> None:
         """Generate maze using recursive backtracking from a starting cell.

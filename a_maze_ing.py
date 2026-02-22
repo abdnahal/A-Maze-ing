@@ -42,8 +42,6 @@ def main() -> None:
                 raise KeyError("Missing OUTPUT_FILE key")
             seed = config.get_int("SEED") if config.get("SEED") else None
             perfect = config.get_bool("PERFECT")
-            if not perfect:
-                raise KeyError("Missing PERFECT key")
         except (FileNotFoundError, ValueError, KeyError) as e:
             print(f"Configuration Error: {e}")
             sys.exit(1)

@@ -37,7 +37,7 @@ class ConfigParser:
                 for line in file:
                     if line.startswith("#"):
                         continue
-                    if not line:
+                    if len(line.strip()) == 0:
                         continue
                     if "=" in line:
                         par = line.split("=", 1)

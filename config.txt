@@ -1,8 +1,8 @@
 # Maze Configuration File
-WIDTH= 14
-HEIGHT= 10
+WIDTH=14
+HEIGHT=10
 ENTRY=0,0
 EXIT=13,9
+PERFECT=False
 OUTPUT_FILE=maze.txt
-PERFECT=true
 SEED=42
